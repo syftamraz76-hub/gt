@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نظام اللجان والجلوس</title>
+  <meta name="description" content="استعلم عن رقم اللجنة ومقر اللجنة ورقم الجلوس باستخدام رقم الهوية." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="اين لجنتي" />
+  <meta property="og:description" content="استعلم عن رقم اللجنة ومقر اللجنة ورقم الجلوس باستخدام رقم الهوية." />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="اين لجنتي" />
+  <meta name="twitter:description" content="استعلم عن رقم اللجنة ومقر اللجنة ورقم الجلوس باستخدام رقم الهوية." />
+  <title>اين لجنتي</title>
   <style>
     * { box-sizing: border-box; font-family: Tahoma, Arial, sans-serif; }
     body { margin:0; min-height:100vh; color:#fff; background: radial-gradient(circle at top right, rgba(37,99,235,.28), transparent 32%), radial-gradient(circle at bottom left, rgba(16,185,129,.22), transparent 35%), #0f172a; }
@@ -60,7 +67,7 @@
   </style>
 </head>
 <body>
-  <header><div class="container header-row"><div class="brand"><div class="logo" id="logoText">لـ</div><div><h1 id="siteName">نظام اللجان والجلوس</h1><p id="siteSubtitle">استعلام الطالب عن اللجنة ومقرها ورقم الجلوس</p></div></div><div class="top-actions"><button class="dark" onclick="showPublic()">استعلام طالب</button><button class="admin-icon-btn" onclick="showAdminLogin()" title="الإدارة">⚙️</button></div></div></header>
+  <header><div class="container header-row"><div class="brand"><div class="logo" id="logoText">لـ</div><div><h1 id="siteName">اين لجنتي</h1><p id="siteSubtitle">استعلام الطالب عن اللجنة ومقرها ورقم الجلوس</p></div></div><div class="top-actions"><button class="dark" onclick="showPublic()">استعلام طالب</button><button class="admin-icon-btn" onclick="showAdminLogin()" title="الإدارة">⚙️</button></div></div></header>
   <main class="container">
     <section id="publicSection" class="hero public-no-admin"><div class="card"><h2 class="hero-title">استعلم عن بيانات لجنتك بسهولة</h2><p class="muted" id="publicNote">أدخل رقم الهوية لعرض رقم اللجنة، مقر اللجنة، ورقم الجلوس.</p><div class="search-box no-print"><label>رقم الهوية</label><input id="studentIdInput" placeholder="اكتب رقم الهوية" inputmode="numeric" autocomplete="off" /><button class="primary" onclick="searchStudent()">عرض بياناتي</button></div><div id="studentMessage"></div><div id="studentResult" class="result card"><h2 style="margin-top:0;">بطاقة بيانات الطالب</h2><p class="muted">احتفظ بهذه البيانات أو اطبعها قبل موعد الاختبار.</p><div class="info-grid"><div class="info-item"><span>اسم الطالب</span><strong id="rName">-</strong></div><div class="info-item"><span>آخر 4 أرقام من الهوية</span><strong id="rId">-</strong></div><div class="info-item"><span>رقم اللجنة</span><strong id="rCommittee">-</strong></div><div class="info-item"><span>مقر اللجنة</span><strong id="rPlace">-</strong></div><div class="info-item"><span>رقم الجلوس</span><strong id="rSeat">-</strong></div><div class="info-item"><span>الصف / المرحلة</span><strong id="rGrade">-</strong></div><div class="info-item"><span>الفترة</span><strong id="rPeriod">-</strong></div><div class="info-item"><span>ملاحظات</span><strong id="rNotes">-</strong></div></div><div style="margin-top:16px;" class="no-print"><button class="primary" onclick="window.print()">طباعة البطاقة</button></div></div></div>
     <div class="card login-card hidden" id="adminLoginBox"><h2 style="margin-top:0;">دخول الإدارة</h2><p class="muted">هذه لوحة محلية داخل الملف. البيانات الأساسية مدمجة في الكود.</p><div class="login-box"><div><label>اسم المستخدم</label><input id="loginUser" placeholder="admin" /></div><div><label>كلمة المرور</label><input id="loginPass" type="password" placeholder="123456" /></div><button class="primary" onclick="loginAdmin()">تسجيل الدخول</button><div id="loginMessage"></div></div></div></section>
@@ -84,15 +91,15 @@
     function onlyDigits(v){ return String(v||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[^\d]/g,''); }
     async function sha256(text){ const bytes = new TextEncoder().encode(text); const hash = await crypto.subtle.digest('SHA-256', bytes); return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
     function fullPermissions(){ const o={}; allPerms.forEach(p=>o[p]=true); return o; }
-    function defaultState(){ return { settings:{siteName:'نظام اللجان والجلوس',logoText:'لـ',subtitle:'استعلام الطالب عن اللجنة ومقرها ورقم الجلوس',publicNote:'أدخل رقم الهوية لعرض رقم اللجنة، مقر اللجنة، ورقم الجلوس.'}, admins:[{id:'owner',name:'المدير العام',username:'admin',password:'123456',role:'مالك النظام',locked:true,permissions:fullPermissions()}], extraStudents:[], deletedStudentIds:[] }; }
-    function loadState(){ state = JSON.parse(localStorage.getItem(STORAGE_KEY)||'null') || defaultState(); applySettings(); }
+    function defaultState(){ return { settings:{siteName:'اين لجنتي',logoText:'لـ',subtitle:'استعلام الطالب عن اللجنة ومقرها ورقم الجلوس',publicNote:'أدخل رقم الهوية لعرض رقم اللجنة، مقر اللجنة، ورقم الجلوس.'}, admins:[{id:'owner',name:'المدير العام',username:'admin',password:'123456',role:'مالك النظام',locked:true,permissions:fullPermissions()}], extraStudents:[], deletedStudentIds:[] }; }
+    function loadState(){ state = JSON.parse(localStorage.getItem(STORAGE_KEY)||'null') || defaultState(); if(!state.settings) state.settings=defaultState().settings; const oldSiteName='نظام اللجان والجلوس'; if(!state.settings.siteName || state.settings.siteName===oldSiteName) state.settings.siteName='اين لجنتي'; applySettings(); }
     function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
     function allStudents(){ const deleted = new Set(state.deletedStudentIds||[]); const base = embeddedStudents.filter(s=>!deleted.has(String(s.sourceRow))); const byHash = new Map(embeddedStudents.map(s=>[s.idHash,s.nationalId||''])); return [...base, ...(state.extraStudents||[])].map(s=>{ const nationalId = s.nationalId || byHash.get(s.idHash) || ''; return {...s, nationalId, idLast4: s.idLast4 || (nationalId ? String(nationalId).slice(-4) : '')}; }); }
     function has(p){ return currentAdmin && currentAdmin.permissions && currentAdmin.permissions[p]; }
     function msg(id,text,type='success'){ const cls=type==='error'?'alert error':type==='warn'?'alert':'alert success'; $(id).innerHTML=`<div class="${cls}">${text}</div>`; }
     function clearMsg(id){ $(id).innerHTML=''; }
     function escapeHtml(t){ return String(t??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
-    function applySettings(){ const s=state.settings; $('siteName').textContent=s.siteName; $('logoText').textContent=s.logoText||'لـ'; $('siteSubtitle').textContent=s.subtitle||''; $('publicNote').textContent=s.publicNote||''; document.title=s.siteName||'نظام اللجان والجلوس'; }
+    function applySettings(){ const s=state.settings; $('siteName').textContent=s.siteName; $('logoText').textContent=s.logoText||'لـ'; $('siteSubtitle').textContent=s.subtitle||''; $('publicNote').textContent=s.publicNote||''; document.title=s.siteName||'اين لجنتي'; }
     function showPublic(){ $('publicSection').style.display='grid'; $('publicSection').classList.add('public-no-admin'); $('adminLoginBox').classList.add('hidden'); $('adminArea').classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'}); }
     function showAdminLogin(){ $('publicSection').style.display='grid'; $('publicSection').classList.remove('public-no-admin'); $('adminLoginBox').classList.remove('hidden'); $('adminArea').classList.remove('show'); $('adminLoginBox').scrollIntoView({behavior:'smooth',block:'center'}); }
     function loginAdmin(){ clearMsg('loginMessage'); const u=$('loginUser').value.trim(), p=$('loginPass').value; const a=state.admins.find(x=>x.username===u&&x.password===p); if(!a) return msg('loginMessage','بيانات الدخول غير صحيحة.','error'); currentAdmin=a; $('currentAdminName').textContent=a.name; $('publicSection').style.display='none'; $('adminArea').classList.add('show'); renderAll(); }
