@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نظام اللجان والجلوس</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Tahoma", "Arial", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.22), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.20), transparent 35%),
+        #0f172a;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1200px, 94%);
+      margin: auto;
+    }
+
+    header {
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(15, 23, 42, 0.78);
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #38bdf8, #22c55e);
+      display: grid;
+      place-items: center;
+      color: #06111f;
+      font-weight: 900;
+      font-size: 22px;
+      box-shadow: 0 15px 40px rgba(56,189,248,0.25);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 800;
+      color: #06111f;
+      background: #e2e8f0;
+      transition: 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button:hover, .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #38bdf8, #22c55e);
+    }
+
+    .danger {
+      background: #fb7185;
+      color: #fff;
+    }
+
+    .dark {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .warn {
+      background: #fbbf24;
+      color: #111827;
+    }
+
+    .admin-icon-btn {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border-radius: 50%;
+      font-size: 22px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    main {
+      padding: 35px 0 70px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .hero.public-no-admin {
+      grid-template-columns: 1fr;
+    }
+
+    .hero.public-no-admin > .card:first-child {
+      max-width: 900px;
+      width: 100%;
+      margin: auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 26px;
+      padding: 24px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.22);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-title {
+      font-size: clamp(28px, 5vw, 52px);
+      margin: 0 0 12px;
+      line-height: 1.25;
+    }
+
+    .muted {
+      color: #cbd5e1;
+      line-height: 1.8;
+    }
+
+    .search-box {
+      margin-top: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(15,23,42,0.68);
+      color: #fff;
+      padding: 14px;
+      border-radius: 14px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    label {
+      color: #e2e8f0;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 7px;
+      display: block;
+    }
+
+    .result {
+      margin-top: 18px;
+      display: none;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .info-item {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 14px;
+      border-radius: 18px;
+    }
+
+    .info-item span {
+      color: #94a3b8;
+      font-size: 12px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .info-item strong {
+      font-size: 18px;
+    }
+
+    .login-box {
+      display: grid;
+      gap: 12px;
+    }
+
+    .admin-area {
+      display: none;
+    }
+
+    .admin-area.show {
+      display: block;
+    }
+
+    .tabs {
+      margin: 24px 0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #38bdf8, #22c55e);
+      color: #06111f;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 22px;
+      padding: 20px;
+    }
+
+    .stat h3 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    .stat p {
+      margin: 7px 0 0;
+      color: #cbd5e1;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .toolbar .search {
+      max-width: 380px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px;
+      background: rgba(15,23,42,0.55);
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: right;
+      vertical-align: middle;
+    }
+
+    th {
+      color: #a5f3fc;
+      font-size: 13px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    td {
+      color: #f8fafc;
+      font-size: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .small {
+      padding: 8px 10px;
+      border-radius: 11px;
+      font-size: 12px;
+    }
+
+    .badge {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(34,197,94,0.15);
+      color: #86efac;
+      border: 1px solid rgba(134,239,172,0.2);
+      display: inline-flex;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.74);
+      z-index: 99;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(760px, 100%);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 26px;
+      padding: 22px;
+      box-shadow: 0 30px 100px rgba(0,0,0,0.45);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .modal-head h2 {
+      margin: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .permissions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .perm {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 11px;
+      border-radius: 14px;
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      color: #e2e8f0;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .perm input {
+      width: auto;
+    }
+
+    .alert {
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(251,191,36,0.13);
+      border: 1px solid rgba(251,191,36,0.25);
+      color: #fde68a;
+      line-height: 1.7;
+      margin: 12px 0;
+    }
+
+    .success {
+      background: rgba(34,197,94,0.13);
+      border-color: rgba(34,197,94,0.25);
+      color: #bbf7d0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 850px) {
+      .hero, .stats, .form-grid, .info-grid, .permissions {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        position: static;
+      }
+    }
+
+    @media print {
+      header, .top-actions, .search-box, .login-card, .admin-area, .no-print {
+        display: none !important;
+      }
+
+      body {
+        background: #fff;
+        color: #000;
+      }
+
+      .card {
+        background: #fff;
+        color: #000;
+        border: 1px solid #ddd;
+        box-shadow: none;
+      }
+
+      .result {
+        display: block !important;
+      }
+
+      .info-item {
+        background: #fff;
+        color: #000;
+        border: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container header-row">
+    <div class="brand">
+      <div class="logo" id="logoText">لـ</div>
+      <div>
+        <h1 id="siteName">نظام اللجان والجلوس</h1>
+        <p id="siteSubtitle">استعلام الطالب عن اللجنة ومقرها ورقم الجلوس</p>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="dark" onclick="showPublic()">استعلام طالب</button>
+      <button class="admin-icon-btn" onclick="showAdminLogin()" title="الإدارة">⚙️</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section id="publicSection" class="hero public-no-admin">
+    <div class="card">
+      <h2 class="hero-title">استعلم عن بيانات لجنتك بسهولة</h2>
+      <p class="muted" id="publicNote">
+        أدخل رقم الهوية لعرض رقم اللجنة، مقر اللجنة، ورقم الجلوس.
+      </p>
+
+      <div class="search-box no-print">
+        <label>رقم الهوية</label>
+        <input id="studentIdInput" placeholder="مثال: 1234567890" inputmode="numeric" />
+        <button class="primary" onclick="searchStudent()">عرض بياناتي</button>
+      </div>
+
+      <div id="studentMessage"></div>
+
+      <div id="studentResult" class="result card">
+        <h2 style="margin-top:0;">بطاقة بيانات الطالب</h2>
+        <p class="muted">احتفظ بهذه البيانات أو اطبعها قبل موعد الاختبار.</p>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <span>اسم الطالب</span>
+            <strong id="rName">-</strong>
+          </div>
+          <div class="info-item">
+            <span>رقم الهوية</span>
+            <strong id="rId">-</strong>
+          </div>
+          <div class="info-item">
+            <span>رقم اللجنة</span>
+            <strong id="rCommittee">-</strong>
+          </div>
+          <div class="info-item">
+            <span>مقر اللجنة</span>
+            <strong id="rPlace">-</strong>
+          </div>
+          <div class="info-item">
+            <span>رقم الجلوس</span>
+            <strong id="rSeat">-</strong>
+          </div>
+          <div class="info-item">
+            <span>الصف / المرحلة</span>
+            <strong id="rGrade">-</strong>
+          </div>
+          <div class="info-item">
+            <span>الفترة</span>
+            <strong id="rPeriod">-</strong>
+          </div>
+          <div class="info-item">
+            <span>ملاحظات</span>
+            <strong id="rNotes">-</strong>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;" class="no-print">
+          <button class="primary" onclick="window.print()">طباعة البطاقة</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card login-card hidden" id="adminLoginBox">
+      <h2 style="margin-top:0;">دخول الإدارة</h2>
+      <p class="muted">ادخل بحساب الإدارة للتحكم بالطلاب والصلاحيات.</p>
+
+      <div class="login-box">
+        <div>
+          <label>اسم المستخدم</label>
+          <input id="loginUser" placeholder="admin" />
+        </div>
+        <div>
+          <label>كلمة المرور</label>
+          <input id="loginPass" type="password" placeholder="123456" />
+        </div>
+        <button class="primary" onclick="loginAdmin()">تسجيل الدخول</button>
+        <div id="loginMessage"></div>
+      </div>
+
+      <div class="alert">
+        أول دخول: <b>admin</b> / <b>123456</b><br>
+        غير كلمة المرور بعد التجربة من إدارة المدراء.
+      </div>
+    </div>
+  </section>
+
+  <section id="adminArea" class="admin-area">
+    <div class="card">
+      <div class="toolbar">
+        <div>
+          <h2 style="margin:0;">لوحة الإدارة</h2>
+          <p class="muted" style="margin:6px 0 0;">مرحبًا، <b id="currentAdminName"></b></p>
+        </div>
+        <button class="danger" onclick="logoutAdmin()">تسجيل الخروج</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active dark" data-tab="dashboard" onclick="openTab('dashboard')">الرئيسية</button>
+        <button class="tab-btn dark" data-tab="students" onclick="openTab('students')">إدارة الطلاب</button>
+        <button class="tab-btn dark" data-tab="admins" onclick="openTab('admins')">إدارة المدراء والصلاحيات</button>
+        <button class="tab-btn dark" data-tab="settings" onclick="openTab('settings')">إعدادات الموقع</button>
+        <button class="tab-btn dark" data-tab="backup" onclick="openTab('backup')">نسخ واستيراد</button>
+      </div>
+
+      <div id="panel-dashboard" class="panel active">
+        <div class="stats">
+          <div class="stat">
+            <h3 id="statStudents">0</h3>
+            <p>عدد الطلاب</p>
+          </div>
+          <div class="stat">
+            <h3 id="statCommittees">0</h3>
+            <p>عدد اللجان</p>
+          </div>
+          <div class="stat">
+            <h3 id="statPlaces">0</h3>
+            <p>عدد مقرات اللجان</p>
+          </div>
+          <div class="stat">
+            <h3 id="statAdmins">0</h3>
+            <p>عدد حسابات الإدارة</p>
+          </div>
+        </div>
+
+        <div class="alert success">
+          النظام جاهز. تستطيع إضافة الطلاب يدويًا، تعديل بياناتهم، إنشاء حسابات إدارة، وتحديد صلاحيات كل مدير.
+        </div>
+      </div>
+
+      <div id="panel-students" class="panel">
+        <div class="toolbar">
+          <input class="search" id="studentSearchAdmin" placeholder="بحث بالاسم أو الهوية أو اللجنة..." oninput="renderStudents()" />
+          <button class="primary" id="addStudentBtn" onclick="openStudentModal()">إضافة طالب</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>رقم الهوية</th>
+                <th>الصف</th>
+                <th>اللجنة</th>
+                <th>المقر</th>
+                <th>رقم الجلوس</th>
+                <th>الفترة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="panel-admins" class="panel">
+        <div class="toolbar">
+          <p class="muted">أنشئ حسابات إدارة وحدد صلاحيات كل حساب.</p>
+          <button class="primary" id="addAdminBtn" onclick="openAdminModal()">إضافة إدارة</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>اسم المستخدم</th>
+                <th>الدور</th>
+                <th>الصلاحيات</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="panel-settings" class="panel">
+        <div class="form-grid">
+          <div>
+            <label>اسم الموقع</label>
+            <input id="setSiteName" />
+          </div>
+          <div>
+            <label>اختصار الشعار</label>
+            <input id="setLogoText" maxlength="2" />
+          </div>
+          <div class="full">
+            <label>وصف أعلى الموقع</label>
+            <input id="setSubtitle" />
+          </div>
+          <div class="full">
+            <label>ملاحظة صفحة الطالب</label>
+            <textarea id="setPublicNote" rows="4"></textarea>
+          </div>
+          <div class="full">
+            <button class="primary" onclick="saveSettings()">حفظ الإعدادات</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-backup" class="panel">
+        <div class="alert">
+          استخدم النسخة الاحتياطية قبل أي تعديل كبير. تقدر تصدر ملف JSON وترجعه لاحقًا.
+        </div>
+
+        <div class="toolbar">
+          <button class="primary" onclick="exportBackup()">تحميل نسخة احتياطية JSON</button>
+          <label class="btn dark">
+            استيراد نسخة JSON
+            <input type="file" id="importFile" accept="application/json" class="hidden" onchange="importBackup(event)" />
+          </label>
+          <button class="danger" onclick="resetSystem()">إعادة ضبط النظام</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="studentModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="studentModalTitle">إضافة طالب</h2>
+      <button class="dark" onclick="closeModal('studentModal')">إغلاق</button>
+    </div>
+
+    <input type="hidden" id="studentEditId" />
+
+    <div class="form-grid">
+      <div>
+        <label>اسم الطالب</label>
+        <input id="sName" />
+      </div>
+      <div>
+        <label>رقم الهوية</label>
+        <input id="sNationalId" inputmode="numeric" />
+      </div>
+      <div>
+        <label>الصف / المرحلة</label>
+        <input id="sGrade" placeholder="مثال: ثالث ثانوي" />
+      </div>
+      <div>
+        <label>رقم اللجنة</label>
+        <input id="sCommittee" placeholder="مثال: 12" />
+      </div>
+      <div>
+        <label>مقر اللجنة</label>
+        <input id="sPlace" placeholder="مثال: مبنى أ - الدور الثاني" />
+      </div>
+      <div>
+        <label>رقم الجلوس</label>
+        <input id="sSeat" placeholder="مثال: 145" />
+      </div>
+      <div>
+        <label>الفترة</label>
+        <select id="sPeriod">
+          <option>صباحية</option>
+          <option>مسائية</option>
+          <option>غير محدد</option>
+        </select>
+      </div>
+      <div>
+        <label>ملاحظات</label>
+        <input id="sNotes" placeholder="اختياري" />
+      </div>
+      <div class="full">
+        <button class="primary" onclick="saveStudent()">حفظ الطالب</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="adminModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="adminModalTitle">إضافة إدارة</h2>
+      <button class="dark" onclick="closeModal('adminModal')">إغلاق</button>
+    </div>
+
+    <input type="hidden" id="adminEditId" />
+
+    <div class="form-grid">
+      <div>
+        <label>اسم المدير</label>
+        <input id="aName" />
+      </div>
+      <div>
+        <label>اسم المستخدم</label>
+        <input id="aUsername" />
+      </div>
+      <div>
+        <label>كلمة المرور</label>
+        <input id="aPassword" type="password" />
+      </div>
+      <div>
+        <label>الدور</label>
+        <input id="aRole" placeholder="مثال: مشرف لجان" />
+      </div>
+
+      <div class="full">
+        <label>الصلاحيات</label>
+        <div class="permissions" id="permissionsBox"></div>
+      </div>
+
+      <div class="full">
+        <button class="primary" onclick="saveAdmin()">حفظ الإدارة</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "SAHM_COMMITTEE_SYSTEM_V1";
+
+  const PERMISSIONS = {
+    studentsView: "عرض الطلاب",
+    studentsCreate: "إضافة طلاب",
+    studentsEdit: "تعديل الطلاب",
+    studentsDelete: "حذف الطلاب",
+    adminsView: "عرض الإدارة",
+    adminsCreate: "إضافة إدارة",
+    adminsEdit: "تعديل الإدارة",
+    adminsDelete: "حذف الإدارة",
+    settings: "تعديل إعدادات الموقع",
+    backup: "النسخ والاستيراد"
+  };
+
+  const allPerms = Object.keys(PERMISSIONS);
+
+  let db = null;
+  let currentAdmin = null;
+
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function onlyDigits(value) {
+    return String(value || "")
+      .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+      .replace(/[^\d]/g, "");
+  }
+
+  function maskId(id) {
+    id = String(id || "");
+    if (id.length <= 4) return id;
+    return "******" + id.slice(-4);
+  }
+
+  function defaultDb() {
+    const fullPerms = {};
+    allPerms.forEach(p => fullPerms[p] = true);
+
+    return {
+      settings: {
+        siteName: "نظام اللجان والجلوس",
+        logoText: "لـ",
+        subtitle: "استعلام الطالب عن اللجنة ومقرها ورقم الجلوس",
+        publicNote: "أدخل رقم الهوية لعرض رقم اللجنة، مقر اللجنة، ورقم الجلوس."
+      },
+      admins: [
+        {
+          id: "owner",
+          name: "المدير العام",
+          username: "admin",
+          password: "123456",
+          role: "مالك النظام",
+          locked: true,
+          permissions: fullPerms
+        }
+      ],
+      students: [
+        {
+          id: uid(),
+          name: "طالب تجريبي",
+          nationalId: "1234567890",
+          grade: "ثالث ثانوي",
+          committee: "12",
+          place: "مبنى أ - الدور الثاني",
+          seat: "145",
+          period: "صباحية",
+          notes: "الحضور قبل الاختبار بنصف ساعة"
+        }
+      ]
+    };
+  }
+
+  function loadDb() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) {
+      db = defaultDb();
+      saveDb();
+    } else {
+      db = JSON.parse(saved);
+    }
+  }
+
+  function saveDb() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  }
+
+  function applySettings() {
+    document.title = db.settings.siteName;
+    document.getElementById("siteName").textContent = db.settings.siteName;
+    document.getElementById("logoText").textContent = db.settings.logoText || "لـ";
+    document.getElementById("siteSubtitle").textContent = db.settings.subtitle || "";
+    document.getElementById("publicNote").textContent = db.settings.publicNote || "";
+  }
+
+  function showPublic() {
+    document.getElementById("publicSection").style.display = "grid";
+    document.getElementById("publicSection").classList.add("public-no-admin");
+    document.getElementById("adminLoginBox").classList.add("hidden");
+    document.getElementById("adminArea").classList.remove("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showAdminLogin() {
+    document.getElementById("publicSection").style.display = "grid";
+    document.getElementById("publicSection").classList.remove("public-no-admin");
+    document.getElementById("adminLoginBox").classList.remove("hidden");
+    document.getElementById("adminArea").classList.remove("show");
+    document.getElementById("adminLoginBox").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function loginAdmin() {
+    const username = document.getElementById("loginUser").value.trim();
+    const password = document.getElementById("loginPass").value;
+
+    const admin = db.admins.find(a => a.username === username && a.password === password);
+
+    if (!admin) {
+      msg("loginMessage", "بيانات الدخول غير صحيحة.", "alert");
+      return;
+    }
+
+    currentAdmin = admin;
+    document.getElementById("publicSection").style.display = "none";
+    document.getElementById("adminArea").classList.add("show");
+    document.getElementById("currentAdminName").textContent = currentAdmin.name;
+    renderAll();
+  }
+
+  function logoutAdmin() {
+    currentAdmin = null;
+    document.getElementById("loginPass").value = "";
+    document.getElementById("adminArea").classList.remove("show");
+    document.getElementById("adminLoginBox").classList.add("hidden");
+    document.getElementById("publicSection").classList.add("public-no-admin");
+    document.getElementById("publicSection").style.display = "grid";
+  }
+
+  function has(permission) {
+    return currentAdmin && currentAdmin.permissions && currentAdmin.permissions[permission];
+  }
+
+  function msg(id, text, cls = "alert success") {
+    document.getElementById(id).innerHTML = `<div class="${cls}">${text}</div>`;
+  }
+
+  function searchStudent() {
+    const id = onlyDigits(document.getElementById("studentIdInput").value);
+    const result = document.getElementById("studentResult");
+
+    result.classList.remove("show");
+    document.getElementById("studentMessage").innerHTML = "";
+
+    if (!id) {
+      msg("studentMessage", "اكتب رقم الهوية أولًا.", "alert");
+      return;
+    }
+
+    const student = db.students.find(s => onlyDigits(s.nationalId) === id);
+
+    if (!student) {
+      msg("studentMessage", "لم يتم العثور على طالب بهذا الرقم. تأكد من رقم الهوية أو راجع الإدارة.", "alert");
+      return;
+    }
+
+    document.getElementById("rName").textContent = student.name;
+    document.getElementById("rId").textContent = maskId(student.nationalId);
+    document.getElementById("rCommittee").textContent = student.committee;
+    document.getElementById("rPlace").textContent = student.place;
+    document.getElementById("rSeat").textContent = student.seat;
+    document.getElementById("rGrade").textContent = student.grade || "-";
+    document.getElementById("rPeriod").textContent = student.period || "-";
+    document.getElementById("rNotes").textContent = student.notes || "-";
+
+    result.classList.add("show");
+  }
+
+  function openTab(tab) {
+    if (tab === "students" && !has("studentsView")) return alert("ما عندك صلاحية عرض الطلاب.");
+    if (tab === "admins" && !has("adminsView")) return alert("ما عندك صلاحية عرض الإدارة.");
+    if (tab === "settings" && !has("settings")) return alert("ما عندك صلاحية تعديل الإعدادات.");
+    if (tab === "backup" && !has("backup")) return alert("ما عندك صلاحية النسخ والاستيراد.");
+
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add("active");
+
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.getElementById(`panel-${tab}`).classList.add("active");
+
+    renderAll();
+  }
+
+  function renderAll() {
+    renderStats();
+    renderStudents();
+    renderAdmins();
+    renderSettingsForm();
+
+    document.getElementById("addStudentBtn").style.display = has("studentsCreate") ? "inline-flex" : "none";
+    document.getElementById("addAdminBtn").style.display = has("adminsCreate") ? "inline-flex" : "none";
+  }
+
+  function renderStats() {
+    document.getElementById("statStudents").textContent = db.students.length;
+    document.getElementById("statCommittees").textContent = new Set(db.students.map(s => s.committee).filter(Boolean)).size;
+    document.getElementById("statPlaces").textContent = new Set(db.students.map(s => s.place).filter(Boolean)).size;
+    document.getElementById("statAdmins").textContent = db.admins.length;
+  }
+
+  function renderStudents() {
+    const tbody = document.getElementById("studentsTable");
+    const q = (document.getElementById("studentSearchAdmin")?.value || "").trim().toLowerCase();
+
+    if (!has("studentsView")) {
+      tbody.innerHTML = `<tr><td colspan="8">لا تملك صلاحية عرض الطلاب.</td></tr>`;
+      return;
+    }
+
+    const filtered = db.students.filter(s => {
+      const text = `${s.name} ${s.nationalId} ${s.grade} ${s.committee} ${s.place} ${s.seat}`.toLowerCase();
+      return text.includes(q);
+    });
+
+    tbody.innerHTML = filtered.map(s => `
+      <tr>
+        <td>${escapeHtml(s.name)}</td>
+        <td>${escapeHtml(maskId(s.nationalId))}</td>
+        <td>${escapeHtml(s.grade || "-")}</td>
+        <td><span class="badge">${escapeHtml(s.committee || "-")}</span></td>
+        <td>${escapeHtml(s.place || "-")}</td>
+        <td>${escapeHtml(s.seat || "-")}</td>
+        <td>${escapeHtml(s.period || "-")}</td>
+        <td>
+          <div class="actions">
+            ${has("studentsEdit") ? `<button class="small warn" onclick="openStudentModal('${s.id}')">تعديل</button>` : ""}
+            ${has("studentsDelete") ? `<button class="small danger" onclick="deleteStudent('${s.id}')">حذف</button>` : ""}
+          </div>
+        </td>
+      </tr>
+    `).join("") || `<tr><td colspan="8">لا توجد بيانات.</td></tr>`;
+  }
+
+  function openStudentModal(id = null) {
+    if (id && !has("studentsEdit")) return alert("ما عندك صلاحية التعديل.");
+    if (!id && !has("studentsCreate")) return alert("ما عندك صلاحية الإضافة.");
+
+    const s = id ? db.students.find(x => x.id === id) : null;
+
+    document.getElementById("studentModalTitle").textContent = s ? "تعديل طالب" : "إضافة طالب";
+    document.getElementById("studentEditId").value = s?.id || "";
+    document.getElementById("sName").value = s?.name || "";
+    document.getElementById("sNationalId").value = s?.nationalId || "";
+    document.getElementById("sGrade").value = s?.grade || "";
+    document.getElementById("sCommittee").value = s?.committee || "";
+    document.getElementById("sPlace").value = s?.place || "";
+    document.getElementById("sSeat").value = s?.seat || "";
+    document.getElementById("sPeriod").value = s?.period || "صباحية";
+    document.getElementById("sNotes").value = s?.notes || "";
+
+    openModal("studentModal");
+  }
+
+  function saveStudent() {
+    const id = document.getElementById("studentEditId").value;
+    const nationalId = onlyDigits(document.getElementById("sNationalId").value);
+
+    const student = {
+      id: id || uid(),
+      name: document.getElementById("sName").value.trim(),
+      nationalId,
+      grade: document.getElementById("sGrade").value.trim(),
+      committee: document.getElementById("sCommittee").value.trim(),
+      place: document.getElementById("sPlace").value.trim(),
+      seat: document.getElementById("sSeat").value.trim(),
+      period: document.getElementById("sPeriod").value,
+      notes: document.getElementById("sNotes").value.trim()
+    };
+
+    if (!student.name || !student.nationalId || !student.committee || !student.place || !student.seat) {
+      alert("عبّئ الاسم، رقم الهوية، رقم اللجنة، مقر اللجنة، ورقم الجلوس.");
+      return;
+    }
+
+    const duplicate = db.students.find(s => s.nationalId === nationalId && s.id !== id);
+    if (duplicate) {
+      alert("رقم الهوية موجود لطالب آخر.");
+      return;
+    }
+
+    if (id) {
+      const index = db.students.findIndex(s => s.id === id);
+      db.students[index] = student;
+    } else {
+      db.students.push(student);
+    }
+
+    saveDb();
+    closeModal("studentModal");
+    renderAll();
+  }
+
+  function deleteStudent(id) {
+    if (!has("studentsDelete")) return alert("ما عندك صلاحية الحذف.");
+    if (!confirm("هل تريد حذف الطالب؟")) return;
+
+    db.students = db.students.filter(s => s.id !== id);
+    saveDb();
+    renderAll();
+  }
+
+  function renderAdmins() {
+    const tbody = document.getElementById("adminsTable");
+
+    if (!has("adminsView")) {
+      tbody.innerHTML = `<tr><td colspan="5">لا تملك صلاحية عرض الإدارة.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = db.admins.map(a => {
+      const perms = Object.keys(a.permissions || {})
+        .filter(p => a.permissions[p])
+        .map(p => PERMISSIONS[p])
+        .slice(0, 4)
+        .join("، ");
+
+      return `
+        <tr>
+          <td>${escapeHtml(a.name)}</td>
+          <td>${escapeHtml(a.username)}</td>
+          <td><span class="badge">${escapeHtml(a.role || "-")}</span></td>
+          <td>${escapeHtml(perms || "بدون صلاحيات")}${Object.keys(a.permissions || {}).filter(p => a.permissions[p]).length > 4 ? "..." : ""}</td>
+          <td>
+            <div class="actions">
+              ${has("adminsEdit") ? `<button class="small warn" onclick="openAdminModal('${a.id}')">تعديل</button>` : ""}
+              ${has("adminsDelete") && !a.locked ? `<button class="small danger" onclick="deleteAdmin('${a.id}')">حذف</button>` : ""}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function buildPermissionsBox(selected = {}) {
+    const box = document.getElementById("permissionsBox");
+
+    box.innerHTML = allPerms.map(p => `
+      <label class="perm">
+        <input type="checkbox" value="${p}" ${selected[p] ? "checked" : ""}>
+        ${PERMISSIONS[p]}
+      </label>
+    `).join("");
+  }
+
+  function openAdminModal(id = null) {
+    if (id && !has("adminsEdit")) return alert("ما عندك صلاحية تعديل الإدارة.");
+    if (!id && !has("adminsCreate")) return alert("ما عندك صلاحية إضافة إدارة.");
+
+    const a = id ? db.admins.find(x => x.id === id) : null;
+
+    document.getElementById("adminModalTitle").textContent = a ? "تعديل إدارة" : "إضافة إدارة";
+    document.getElementById("adminEditId").value = a?.id || "";
+    document.getElementById("aName").value = a?.name || "";
+    document.getElementById("aUsername").value = a?.username || "";
+    document.getElementById("aPassword").value = a?.password || "";
+    document.getElementById("aRole").value = a?.role || "";
+    buildPermissionsBox(a?.permissions || {});
+
+    openModal("adminModal");
+  }
+
+  function saveAdmin() {
+    const id = document.getElementById("adminEditId").value;
+
+    const permissions = {};
+    document.querySelectorAll("#permissionsBox input[type='checkbox']").forEach(ch => {
+      permissions[ch.value] = ch.checked;
+    });
+
+    const admin = {
+      id: id || uid(),
+      name: document.getElementById("aName").value.trim(),
+      username: document.getElementById("aUsername").value.trim(),
+      password: document.getElementById("aPassword").value,
+      role: document.getElementById("aRole").value.trim(),
+      locked: id ? Boolean(db.admins.find(a => a.id === id)?.locked) : false,
+      permissions
+    };
+
+    if (!admin.name || !admin.username || !admin.password) {
+      alert("عبّئ اسم المدير واسم المستخدم وكلمة المرور.");
+      return;
+    }
+
+    const duplicate = db.admins.find(a => a.username === admin.username && a.id !== id);
+    if (duplicate) {
+      alert("اسم المستخدم موجود مسبقًا.");
+      return;
+    }
+
+    if (id) {
+      const index = db.admins.findIndex(a => a.id === id);
+      db.admins[index] = admin;
+
+      if (currentAdmin.id === id) {
+        currentAdmin = admin;
+        document.getElementById("currentAdminName").textContent = currentAdmin.name;
+      }
+    } else {
+      db.admins.push(admin);
+    }
+
+    saveDb();
+    closeModal("adminModal");
+    renderAll();
+  }
+
+  function deleteAdmin(id) {
+    if (!has("adminsDelete")) return alert("ما عندك صلاحية حذف الإدارة.");
+
+    const admin = db.admins.find(a => a.id === id);
+    if (!admin || admin.locked) return alert("لا يمكن حذف المدير الأساسي.");
+
+    if (!confirm("هل تريد حذف حساب الإدارة؟")) return;
+
+    db.admins = db.admins.filter(a => a.id !== id);
+    saveDb();
+    renderAll();
+  }
+
+  function renderSettingsForm() {
+    document.getElementById("setSiteName").value = db.settings.siteName || "";
+    document.getElementById("setLogoText").value = db.settings.logoText || "";
+    document.getElementById("setSubtitle").value = db.settings.subtitle || "";
+    document.getElementById("setPublicNote").value = db.settings.publicNote || "";
+  }
+
+  function saveSettings() {
+    if (!has("settings")) return alert("ما عندك صلاحية تعديل الإعدادات.");
+
+    db.settings.siteName = document.getElementById("setSiteName").value.trim();
+    db.settings.logoText = document.getElementById("setLogoText").value.trim() || "لـ";
+    db.settings.subtitle = document.getElementById("setSubtitle").value.trim();
+    db.settings.publicNote = document.getElementById("setPublicNote").value.trim();
+
+    saveDb();
+    applySettings();
+    alert("تم حفظ الإعدادات.");
+  }
+
+  function exportBackup() {
+    if (!has("backup")) return alert("ما عندك صلاحية النسخ.");
+
+    const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "committee-system-backup.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+  function importBackup(event) {
+    if (!has("backup")) return alert("ما عندك صلاحية الاستيراد.");
+
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      try {
+        const imported = JSON.parse(e.target.result);
+
+        if (!imported.settings || !Array.isArray(imported.admins) || !Array.isArray(imported.students)) {
+          alert("ملف النسخة غير صحيح.");
+          return;
+        }
+
+        if (!confirm("سيتم استبدال البيانات الحالية بالنسخة المستوردة. هل أنت متأكد؟")) return;
+
+        db = imported;
+        saveDb();
+        applySettings();
+        currentAdmin = null;
+        logoutAdmin();
+        alert("تم الاستيراد بنجاح. سجل الدخول مرة أخرى.");
+      } catch {
+        alert("حدث خطأ أثناء قراءة الملف.");
+      }
+    };
+
+    reader.readAsText(file);
+  }
+
+  function resetSystem() {
+    if (!has("backup")) return alert("ما عندك صلاحية إعادة الضبط.");
+    if (!confirm("سيتم حذف كل البيانات وإرجاع النظام للوضع الافتراضي. هل أنت متأكد؟")) return;
+
+    localStorage.removeItem(STORAGE_KEY);
+    loadDb();
+    applySettings();
+    currentAdmin = null;
+    logoutAdmin();
+    alert("تمت إعادة الضبط.");
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.add("show");
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove("show");
+  }
+
+  function escapeHtml(text) {
+    return String(text ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  loadDb();
+  applySettings();
+</script>
+
+</body>
+</html>
